@@ -84,11 +84,11 @@ class MqttClient():
 
         if len(self.subscribe_topics["topic"]) == 0:
             self.subscribe_topics = []
-
-        self.subscribe_topic = self.subscribe_topics["topic"]
+        else:
+            self.subscribe_topics = self.subscribe_topics["topic"]
 
         print("Found subscribe topics:")
-        print(self.subscribe_topic)
+        print(self.subscribe_topics)
         
 
     def set_on_message(self, func):
@@ -130,7 +130,18 @@ class MqttClient():
         msg = msg.strip(' ')
 
         # gets the topic
+        # topic structure: 'esp32/username/mac_address/measure/varname'
         topic = message.topic                           
+
+        topic_sections = topic.split("/")
+        username = topic_sections[1]
+        mac_address = topic_sections[2]
+        varname = topic_sections[4]
+
+        self.database_conn_handler.write_ambiental_data(username = username,
+                                                        mac_address = mac_address, 
+                                                        value   = float(msg), 
+                                                        varname = varname)
 
         #recieved message, its topic and its qos 
         print(f"Message received: {msg} from topic: {topic} with QoS: {message.qos}")

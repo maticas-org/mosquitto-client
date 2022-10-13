@@ -29,4 +29,7 @@ mqtt_conn = MqttClient( mqtt_broker     = os.environ['MQTT_IP'],
                         mqtt_client_id  = os.environ['MQTT_CLIENT_ID'], 
                         database_conn_handler = conn_handler)
 
+while True:
+
+    sleep(0.1)
 
