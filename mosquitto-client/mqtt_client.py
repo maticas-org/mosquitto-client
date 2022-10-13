@@ -10,7 +10,10 @@ import datetime
 import time 
 import csv
 import os
+import re
 
+# creates a regular expression to match a float number
+float_regex = re.compile(r'^[-+]?[0-9]*\.?[0-9]+([eE][-+]?[0-9]+)?$')
 
 #------------------------------------#
 
@@ -128,6 +131,14 @@ class MqttClient():
         # decodes the message
         msg = str(message.payload.decode("utf-8"))       
         msg = msg.strip(' ')
+
+        if "ERROR:" in msg:
+            print(msg)
+            return
+        
+        # gets the first match for the float number inside the message
+        msg = float_regex.search(msg).group(0)
+
 
         # gets the topic
         # topic structure: 'esp32/username/mac_address/measure/varname'
